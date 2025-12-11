@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>${spring.application.name}</contextName>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProfile name="!dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <shortenedLoggerNameLength>36</shortenedLoggerNameLength>
+                <excludeMdcKeyName>trace_flags</excludeMdcKeyName>
+                <excludeMdcKeyName>span_id</excludeMdcKeyName>
+                <excludeMdcKeyName>spanId</excludeMdcKeyName>
+                <excludeMdcKeyName>traceId</excludeMdcKeyName>
+                <fieldNames>
+                    <timestamp>timestamp</timestamp>
+                    <message>msg</message>
+                    <level>logger_level</level>
+                    <version>[ignore]</version>
+                    <levelValue>[ignore]</levelValue>
+                </fieldNames>
+                <timestampPattern>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampPattern>
+                <timeZone>UTC</timeZone>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="dev">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    </springProfile>
+
+    <root level="all">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

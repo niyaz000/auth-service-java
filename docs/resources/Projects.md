@@ -1,32 +1,29 @@
 # Tenants
 
-This document describes the `tenants` resource: what a tenant is, the
+This document describes the `projects` resource: what a project is, the
 identifiers used, constraints, and the database schema and the rest apis exposed to the clients.
 
-## What is a tenant
+## What is a project
 
-A tenant represents an isolated customer or organization account. Tenants are
-the highest-level unit of isolation in the system; other entities (users,
-settings, api_keys) are scoped to a tenant. Tenants are intended to be
-independent and non-overlapping.
+A Project represents a business use case for the account it belongs to. Each project lives under an account.
+For a cloud saas application each project might represent 1 mirco-service.
 
-## Identifiers
+## Key Identifiers
 
 - Primary identifier: `id` (integer, `BIGSERIAL`) — internal primary key used by the
   database.
-- External identifier: `external_id` (string/UUID) — optional stable external id.
+- URL: `url` (HTTP URL) — URL through which users will be interacting with the apis.
 - Human-friendly identifier: `name` — treated as unique and used for display.
 
 ## Constraints & conventions
 
-- `name` must be unique, stored in lowercase, and should not contain leading or trailing whitespace.
-- `email` and `phone_number` must be unique across tenants and should not contain leading or trailing whitespace (enforced by unique indexes).
-- If used, `external_id` must be unique.
+- `name` must be unique within the account, stored in lowercase, and should not contain leading or trailing whitespace.
+- `url` must be unique across tenants and should not contain leading or trailing whitespace.
 
 ## Database schema (canonical DDL — derived from migration)
 
 ```sql
-CREATE TABLE IF NOT EXISTS tenants (
+CREATE TABLE IF NOT EXISTS projects (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     active BOOLEAN NOT NULL DEFAULT true,

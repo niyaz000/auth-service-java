@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS tenants (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
-    active BOOLEAN NOT NULL DEFAULT true,
     status VARCHAR(16) NOT NULL DEFAULT 'UNVERIFIED',
     email VARCHAR(64) NOT NULL,
     phone_number VARCHAR(10) NOT NULL,
     country_code VARCHAR(3) NOT NULL DEFAULT 'IN',
     email_verified_at TIMESTAMPTZ,
     phone_number_verified_at TIMESTAMPTZ,
+    deleted_at TIMESTAMPTZ DEFAULT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by BIGINT NOT NULL,
@@ -43,12 +43,12 @@ UPDATE
         id = current_setting('app.current_tenant_id', false) :: BIGINT
     );
 
--- Block deletes for role `app_user` by making DELETE require that
--- the current user is NOT `app_user`. If `current_user = 'app_user'`, no
--- DELETE policy will allow the operation and the DELETE will be denied.
+-- Allows deletes for role `admin_user` by making DELETE require that
+-- the current user is equal to `admin_user`. If `current_user = 'admin_user'`,
+-- DELETE policy will allow the operation and the DELETE will be granted.
 CREATE POLICY tenant_delete_policy ON tenants FOR DELETE USING (
     id = current_setting('app.current_tenant_id', false) :: BIGINT
-    AND current_user <> 'app_user'
+    AND current_user = 'admin_user'
 );
 
 CREATE POLICY tenant_allow_insert_policy ON tenants FOR
