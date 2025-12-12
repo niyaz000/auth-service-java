@@ -1,0 +1,41 @@
+INSERT INTO
+    tenants (
+        public_id,
+        name,
+        status,
+        email,
+        phone_number,
+        country_code,
+        email_verified_at,
+        phone_number_verified_at,
+        created_by,
+        updated_by,
+        request_id
+    )
+VALUES
+    (
+        'ten_A9fK3mZtQ2bRp',
+        'amazon',
+        'VERIFIED',
+        'nk@amazon.in',
+        '9876543210',
+        'IN',
+        NOW(),
+        NOW(),
+        1,
+        1,
+        gen_random_uuid()
+    ),
+    (
+        'ten_x7D2qLmA8TzH4',
+        'flipkart',
+        'VERIFIED',
+        'nk@flipkart.in',
+        '9876543211',
+        'IN',
+        NOW(),
+        NOW(),
+        1,
+        1,
+        gen_random_uuid()
+    ) ON CONFLICT DO NOTHING;

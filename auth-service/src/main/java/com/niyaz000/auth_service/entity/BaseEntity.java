@@ -82,4 +82,7 @@ public class BaseEntity implements Serializable {
         requestId = LoggerUtil.currentRequestUuId();
     }
 
+    public boolean isActive() {
+        return this.deletedAt == null;
+    }
 }

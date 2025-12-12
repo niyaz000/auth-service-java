@@ -1,9 +1,8 @@
 package com.niyaz000.auth_service.enums;
 
-public enum UserStatus {
-    PROVISIONED,
+public enum TenantStatus {
+    UNVERIFIED,
     VERIFIED,
     SUSPENDED,
-    DEACTIVATED,
-    DELETED
+    INACTIVE;
 }

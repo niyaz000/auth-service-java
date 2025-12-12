@@ -5,4 +5,6 @@ public final class LoggerConstants {
     public static final String X_REQUEST_ID = "Request-ID";
 
     public static final String X_TENANT_ID = "Tenant-ID";
+
+    public static final String X_USER_ID = "User-ID";
 }

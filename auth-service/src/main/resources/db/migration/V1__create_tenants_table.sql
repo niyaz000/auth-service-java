@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS tenants (
     id BIGSERIAL PRIMARY KEY,
+    public_id VARCHAR(17) NOT NULL,
     name VARCHAR(64) NOT NULL,
     status VARCHAR(16) NOT NULL DEFAULT 'UNVERIFIED',
     email VARCHAR(64) NOT NULL,
@@ -23,29 +24,38 @@ CREATE UNIQUE INDEX IF NOT EXISTS uc_tenants_phone_number_unique ON tenants(phon
 
 CREATE UNIQUE INDEX IF NOT EXISTS uc_tenants_name ON tenants(name);
 
+CREATE UNIQUE INDEX IF NOT EXISTS uc_tenants_public_id ON tenants(public_id);
+
 -- Enable Row Level Security
 ALTER TABLE
     tenants ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS tenant_isolation_policy ON tenants;
+DROP POLICY IF EXISTS tenant_isolation_read_policy ON tenants;
+
+DROP POLICY IF EXISTS tenant_isolation_update_policy ON tenants;
 
 DROP POLICY IF EXISTS tenant_delete_policy ON tenants;
 
 DROP POLICY IF EXISTS tenant_allow_insert_policy ON tenants;
 
-CREATE POLICY tenant_isolation_policy ON tenants FOR
-SELECT
-,
-UPDATE
-    USING (
-        id = current_setting('app.current_tenant_id', false) :: BIGINT
-    ) WITH CHECK (
-        id = current_setting('app.current_tenant_id', false) :: BIGINT
-    );
+CREATE POLICY tenant_isolation_read_policy
+ON tenants
+FOR SELECT
+USING (
+    id = current_setting('app.current_tenant_id', false)::BIGINT
+);
 
--- Allows deletes for role `admin_user` by making DELETE require that
--- the current user is equal to `admin_user`. If `current_user = 'admin_user'`,
--- DELETE policy will allow the operation and the DELETE will be granted.
+CREATE POLICY tenant_isolation_update_policy
+ON tenants
+FOR UPDATE
+USING (
+    id = current_setting('app.current_tenant_id', false)::BIGINT
+)
+WITH CHECK (
+    id = current_setting('app.current_tenant_id', false)::BIGINT
+);
+
+
 CREATE POLICY tenant_delete_policy ON tenants FOR DELETE USING (
     id = current_setting('app.current_tenant_id', false) :: BIGINT
     AND current_user = 'admin_user'
