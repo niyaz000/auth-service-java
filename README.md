@@ -183,3 +183,13 @@ Migration source: `auth-service/src/main/resources/db/migration/V1__create_tenan
 # auth-service-java
 
 User authentication and authorization service for cloud and on-prem use case. Simple yet diverse.
+
+## Run Flyway Migration
+
+```
+./mvnw -Dflyway.url=jdbc:postgresql://localhost:5432/user_service_java \
+       -Dflyway.user=<uname> \
+       -Dflyway.password=<pwd> \
+       -Dflyway.locations=filesystem:src/main/resources/db/migration \
+       flyway:migrate
+```

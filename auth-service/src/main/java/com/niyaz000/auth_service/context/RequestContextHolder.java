@@ -18,4 +18,8 @@ public class RequestContextHolder {
     public static void clearContext() {
         contextHolder.remove();
     }
+
+    public static boolean isContextSet() {
+        return contextHolder.get() != null;
+    }
 }

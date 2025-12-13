@@ -10,6 +10,9 @@ public class EntityAuditor implements AuditorAware<Long> {
 
     @Override
     public Optional<Long> getCurrentAuditor() {
+        if (!RequestContextHolder.isContextSet()) {
+            return Optional.empty();
+        }
         return Optional.of(RequestContextHolder.getContext().getUserId());
     }
 
